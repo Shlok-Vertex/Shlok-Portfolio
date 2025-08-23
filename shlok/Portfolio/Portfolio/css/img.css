@@ -1,0 +1,158 @@
+/* Hero Image Glass + Orbiting Tech Badges */
+.hero-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.image-glass {
+  position: relative;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(255,255,255,0.12);
+  box-shadow: 0 8px 40px rgba(108,99,255,0.18), 0 1.5px 8px rgba(0,0,0,0.08);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.3s;
+}
+
+.image-glass:hover {
+  box-shadow: 0 16px 60px rgba(108,99,255,0.28), 0 3px 16px rgba(0,0,0,0.12);
+}
+
+.profile-img {
+  width: 92%;
+  height: 92%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid var(--primary-color);
+  box-shadow: 0 2px 16px rgba(108,99,255,0.10);
+  background: #fff;
+  z-index: 1;
+}
+/* Fade transition for profile image */
+.profile-img {
+  transition: opacity 0.6s;
+  opacity: 1;
+}
+.profile-img.fade-out {
+  opacity: 0;
+}
+
+/* Orbiting Tech Badges */
+.tech-badges {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.tech-badges .badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(108,99,255,0.10);
+  padding: 6px;
+  transform: translate(-50%, -50%);
+  transition: 
+    transform 0.4s cubic-bezier(.4,2,.6,1),
+    box-shadow 0.2s,
+    filter 0.2s;
+  filter: drop-shadow(0 0 0px #6c63ff);
+  pointer-events: auto;
+  cursor: pointer;
+  will-change: transform;
+}
+
+/* Orbit positions for 5 badges */
+.tech-badges .badge:nth-child(1) {
+  animation: orbit-badge-1 6s linear infinite;
+}
+.tech-badges .badge:nth-child(2) {
+  animation: orbit-badge-2 6s linear infinite;
+}
+.tech-badges .badge:nth-child(3) {
+  animation: orbit-badge-3 6s linear infinite;
+}
+.tech-badges .badge:nth-child(4) {
+  animation: orbit-badge-4 6s linear infinite;
+}
+.tech-badges .badge:nth-child(5) {
+  animation: orbit-badge-5 6s linear infinite;
+}
+
+/* Keyframes for each badge's orbit */
+@keyframes orbit-badge-1 {
+  0%   { transform: translate(-50%, -50%) rotate(0deg) translateY(-140px) rotate(0deg);}
+  100% { transform: translate(-50%, -50%) rotate(360deg) translateY(-140px) rotate(-360deg);}
+}
+@keyframes orbit-badge-2 {
+  0%   { transform: translate(-50%, -50%) rotate(72deg) translateY(-140px) rotate(-72deg);}
+  100% { transform: translate(-50%, -50%) rotate(432deg) translateY(-140px) rotate(-432deg);}
+}
+@keyframes orbit-badge-3 {
+  0%   { transform: translate(-50%, -50%) rotate(144deg) translateY(-140px) rotate(-144deg);}
+  100% { transform: translate(-50%, -50%) rotate(504deg) translateY(-140px) rotate(-504deg);}
+}
+@keyframes orbit-badge-4 {
+  0%   { transform: translate(-50%, -50%) rotate(216deg) translateY(-140px) rotate(-216deg);}
+  100% { transform: translate(-50%, -50%) rotate(576deg) translateY(-140px) rotate(-576deg);}
+}
+@keyframes orbit-badge-5 {
+  0%   { transform: translate(-50%, -50%) rotate(288deg) translateY(-140px) rotate(-288deg);}
+  100% { transform: translate(-50%, -50%) rotate(648deg) translateY(-140px) rotate(-648deg);}
+}
+
+/* Hover effect: scale and glow */
+.tech-badges .badge:hover {
+  transform: translate(-50%, -50%) scale(1.25) !important;
+  box-shadow: 0 8px 24px rgba(108,99,255,0.18), 0 0 16px #6c63ff55;
+  filter: drop-shadow(0 0 12px #6c63ff88);
+  z-index: 10;
+}
+
+/* Responsive: shrink orbit on small screens */
+@media (max-width: 576px) {
+  .image-glass {
+    width: 220px;
+    height: 220px;
+  }
+  .tech-badges .badge {
+    width: 28px;
+    height: 28px;
+    padding: 2px;
+  }
+  @keyframes orbit-badge-1 {
+    0%   { transform: translate(-50%, -50%) rotate(0deg) translateY(-80px) rotate(0deg);}
+    100% { transform: translate(-50%, -50%) rotate(360deg) translateY(-80px) rotate(-360deg);}
+  }
+  @keyframes orbit-badge-2 {
+    0%   { transform: translate(-50%, -50%) rotate(72deg) translateY(-80px) rotate(-72deg);}
+    100% { transform: translate(-50%, -50%) rotate(432deg) translateY(-80px) rotate(-432deg);}
+  }
+  @keyframes orbit-badge-3 {
+    0%   { transform: translate(-50%, -50%) rotate(144deg) translateY(-80px) rotate(-144deg);}
+    100% { transform: translate(-50%, -50%) rotate(504deg) translateY(-80px) rotate(-504deg);}
+  }
+  @keyframes orbit-badge-4 {
+    0%   { transform: translate(-50%, -50%) rotate(216deg) translateY(-80px) rotate(-216deg);}
+    100% { transform: translate(-50%, -50%) rotate(576deg) translateY(-80px) rotate(-576deg);}
+  }
+  @keyframes orbit-badge-5 {
+    0%   { transform: translate(-50%, -50%) rotate(288deg) translateY(-80px) rotate(-288deg);}
+    100% { transform: translate(-50%, -50%) rotate(648deg) translateY(-80px) rotate(-648deg);}
+  }
+}

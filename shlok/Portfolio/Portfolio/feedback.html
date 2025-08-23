@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="images/favicon.png" type="image/png" sizes="128x128">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-light: #e0e7ff;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4cc9f0;
+            --danger-color: #f72585;
+            --warning-color: #ffd166;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        body {
+            background-color: #0f172a;
+            color: var(--light-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(67, 97, 238, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 30%, rgba(248, 37, 133, 0.1) 0%, transparent 50%);
+            z-index: -2;
+        }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            padding-top: 40px;
+        }
+
+        h1 {
+            color: white;
+            margin-bottom: 10px;
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #4361ee, #4cc9f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .feedback-form {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        .feedback-form:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(67, 97, 238, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #e2e8f0;
+            font-size: 1rem;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 15px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid #334155;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: white;
+            transition: var(--transition);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
+            background: rgba(30, 41, 59, 0.8);
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0));
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .btn:hover::after {
+            opacity: 1;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color), #f75a8e);
+            box-shadow: 0 4px 15px rgba(247, 37, 133, 0.3);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 8px 25px rgba(247, 37, 133, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #64748b, #94a3b8);
+            box-shadow: 0 4px 15px rgba(100, 116, 139, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 25px rgba(100, 116, 139, 0.4);
+        }
+
+        .feedback-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .feedback-card {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+            position: relative;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(67, 97, 238, 0.3);
+            z-index: 1;
+        }
+
+        .feedback-card h3 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .feedback-card p {
+            color: #94a3b8;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .feedback-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .feedback-rating {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .star {
+            color: var(--warning-color);
+            font-size: 1.4rem;
+            transition: var(--transition);
+            text-shadow: 0 2px 5px rgba(255, 209, 102, 0.3);
+        }
+
+        .feedback-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            opacity: 1;
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(15, 23, 42, 0.95);
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            transform: translateY(-50px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            opacity: 0;
+        }
+
+        .modal.show .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h2 {
+            color: white;
+            font-size: 1.8rem;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #94a3b8;
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .close-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .no-feedback {
+            text-align: center;
+            color: #64748b;
+            padding: 60px 40px;
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            grid-column: 1 / -1;
+            border: 1px dashed #334155;
+            transition: var(--transition);
+        }
+
+        .no-feedback:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-5px);
+        }
+
+        .no-feedback i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            opacity: 0.7;
+        }
+
+        .no-feedback h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #e2e8f0;
+        }
+
+        .no-feedback p {
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .rating-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .rating-star {
+            font-size: 2rem;
+            color: #334155;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .rating-star:hover, 
+        .rating-star.active {
+            color: var(--warning-color);
+            transform: scale(1.2);
+        }
+
+        .rating-star.hovered {
+            color: var(--warning-color);
+            opacity: 0.7;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            border-radius: 50%;
+            filter: blur(40px);
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--primary-color);
+            top: -100px;
+            left: -100px;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .shape-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--danger-color);
+            bottom: -150px;
+            right: -100px;
+            animation: float 18s infinite ease-in-out reverse;
+        }
+
+        .shape-3 {
+            width: 200px;
+            height: 200px;
+            background: var(--success-color);
+            top: 50%;
+            left: 30%;
+            animation: float 12s infinite ease-in-out 2s;
+        }
+
+        .confirmation {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.9);
+            border-left: 4px solid var(--success-color);
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.4);
+            backdrop-filter: blur(10px);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+        }
+
+        .confirmation.show {
+            transform: translateX(0);
+        }
+
+        .confirmation i {
+            color: var(--success-color);
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+
+        .confirmation p {
+            color: white;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .feedback-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .feedback-actions {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+
+        /* Star rating animation */
+        @keyframes starPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.8; }
+        }
+
+        .animate-star {
+            animation: starPulse 1.5s infinite;
+        }
+
+        /* Hover effect for cards */
+        .feedback-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(76, 201, 240, 0.1));
+            opacity: 0;
+            transition: var(--transition);
+            border-radius: 16px;
+        }
+
+        .feedback-card:hover::before {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Customer Feedback</h1>
+            <p class="subtitle">Share your experience with us. Your feedback helps us improve our services.</p>
+        </header>
+
+        <div class="feedback-form">
+            <h2><i class="fas fa-comment-alt"></i> Add Your Feedback</h2>
+            <form id="feedbackForm">
+                <div class="form-group">
+                    <label for="name"><i class="fas fa-user"></i> Your Name</label>
+                    <input type="text" id="name" required placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> Email (optional)</label>
+                    <input type="email" id="email" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-star"></i> Rating</label>
+                    <div class="rating-input" id="ratingInput">
+                        <i class="fas fa-star rating-star" data-value="1"></i>
+                        <i class="fas fa-star rating-star" data-value="2"></i>
+                        <i class="fas fa-star rating-star" data-value="3"></i>
+                        <i class="fas fa-star rating-star" data-value="4"></i>
+                        <i class="fas fa-star rating-star" data-value="5"></i>
+                    </div>
+                    <input type="hidden" id="rating" required>
+                </div>
+                <div class="form-group">
+                    <label for="feedback"><i class="fas fa-edit"></i> Your Feedback</label>
+                    <textarea id="feedback" required placeholder="Tell us about your experience..."></textarea>
+                </div>
+                <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Submit Feedback</button>
+            </form>
+        </div>
+
+        <div id="feedbackContainer">
+            <h2><i class="fas fa-comments"></i> Recent Feedback</h2>
+            <div id="feedbackList" class="feedback-list">
+                <!-- Feedback cards will be added here dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Feedback Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-edit"></i> Edit Feedback</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="editFeedbackForm">
+                <input type="hidden" id="editId">
+                <div class="form-group">
+                    <label for="editName"><i class="fas fa-user"></i> Your Name</label>
+                    <input type="text" id="editName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editEmail"><i class="fas fa-envelope"></i> Email (optional)</label>
+                    <input type="email" id="editEmail">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-star"></i> Rating</label>
+                    <div class="rating-input" id="editRatingInput">
+                        <i class="fas fa-star rating-star" data-value="1"></i>
+                        <i class="fas fa-star rating-star" data-value="2"></i>
+                        <i class="fas fa-star rating-star" data-value="3"></i>
+                        <i class="fas fa-star rating-star" data-value="4"></i>
+                        <i class="fas fa-star rating-star" data-value="5"></i>
+                    </div>
+                    <input type="hidden" id="editRating" required>
+                </div>
+                <div class="form-group">
+                    <label for="editFeedback"><i class="fas fa-edit"></i> Your Feedback</label>
+                    <textarea id="editFeedback" required></textarea>
+                </div>
+                <div class="feedback-actions">
+                    <button type="submit" class="btn"><i class="fas fa-save"></i> Update</button>
+                    <button type="button" id="cancelEdit" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Toast -->
+    <div id="confirmationToast" class="confirmation">
+        <i class="fas fa-check-circle"></i>
+        <p>Feedback submitted successfully!</p>
+    </div>
+
+    <!-- Particles.js Library -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    // Initialize particles.js
+    particlesJS('particles-js', {
+        "particles": {
+            "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+            "color": { "value": "#4361ee" },
+            "shape": { "type": "circle" },
+            "opacity": {
+                "value": 0.3,
+                "random": true,
+                "anim": { "enable": true, "speed": 1, "opacity_min": 0.1 }
+            },
+            "size": {
+                "value": 3,
+                "random": true,
+                "anim": { "enable": true, "speed": 2, "size_min": 0.1 }
+            },
+            "line_linked": {
+                "enable": true,
+                "distance": 150,
+                "color": "#4361ee",
+                "opacity": 0.2,
+                "width": 1
+            },
+            "move": {
+                "enable": true,
+                "speed": 1,
+                "direction": "none",
+                "random": true,
+                "out_mode": "out"
+            }
+        },
+        "interactivity": {
+            "detect_on": "canvas",
+            "events": {
+                "onhover": { "enable": true, "mode": "grab" },
+                "onclick": { "enable": true, "mode": "push" },
+                "resize": true
+            }
+        },
+        "retina_detect": true
+    });
+
+    // DOM Elements
+    const feedbackForm = document.getElementById('feedbackForm');
+    const feedbackList = document.getElementById('feedbackList');
+    const editModal = document.getElementById('editModal');
+    const editFeedbackForm = document.getElementById('editFeedbackForm');
+    const closeBtn = document.querySelector('.close-btn');
+    const cancelEditBtn = document.getElementById('cancelEdit');
+    const confirmationToast = document.getElementById('confirmationToast');
+    const ratingInput = document.getElementById('ratingInput');
+    const editRatingInput = document.getElementById('editRatingInput');
+    
+    // Feedback data
+    let feedbacks = JSON.parse(localStorage.getItem('feedbacks')) || [];
+    
+    // Initialize star rating
+    initStarRating(ratingInput, 'rating');
+    initStarRating(editRatingInput, 'editRating');
+    
+    // Display existing feedback
+    renderFeedbacks();
+    
+    // Add new feedback
+    feedbackForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const rating = document.getElementById('rating').value;
+        const feedback = document.getElementById('feedback').value;
+        
+        const newFeedback = {
+            id: Date.now(),
+            name,
+            email,
+            rating: parseInt(rating),
+            feedback,
+            date: new Date().toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            })
+        };
+        
+        feedbacks.unshift(newFeedback);
+        saveFeedbacks();
+        renderFeedbacks();
+        feedbackForm.reset();
+        resetStarRating(ratingInput);
+        
+        showConfirmation('Feedback submitted successfully!');
+    });
+    
+    // Modal functions
+    function openModal() {
+        editModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeModal() {
+        editModal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+    
+    closeBtn.addEventListener('click', closeModal);
+    cancelEditBtn.addEventListener('click', closeModal);
+    
+    window.addEventListener('click', function(e) {
+        if (e.target === editModal) {
+            closeModal();
+        }
+    });
+    
+    // Star rating functions
+    function initStarRating(container, targetInputId) {
+        const stars = container.querySelectorAll('.rating-star');
+        const targetInput = document.getElementById(targetInputId);
+        
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const value = parseInt(this.getAttribute('data-value'));
+                targetInput.value = value;
+                
+                stars.forEach(s => {
+                    s.classList.remove('active');
+                    if (parseInt(s.getAttribute('data-value')) <= value) {
+                        s.classList.add('active');
+                    }
+                });
+            });
+            
+            star.addEventListener('mouseover', function() {
+                const value = parseInt(this.getAttribute('data-value'));
+                
+                stars.forEach(s => {
+                    s.classList.remove('hovered');
+                    if (parseInt(s.getAttribute('data-value')) <= value) {
+                        s.classList.add('hovered');
+                    }
+                });
+            });
+            
+            star.addEventListener('mouseout', function() {
+                stars.forEach(s => s.classList.remove('hovered'));
+            });
+        });
+    }
+    
+    function resetStarRating(container) {
+        const stars = container.querySelectorAll('.rating-star');
+        stars.forEach(star => star.classList.remove('active'));
+    }
+    
+    // Confirmation toast
+    function showConfirmation(message) {
+        const toast = confirmationToast;
+        toast.querySelector('p').textContent = message;
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+    
+    // Render all feedbacks
+    function renderFeedbacks() {
+        if (feedbacks.length === 0) {
+            feedbackList.innerHTML = `
+                <div class="no-feedback">
+                    <i class="fas fa-comment-slash"></i>
+                    <h3>No feedback yet</h3>
+                    <p>Be the first to share your thoughts with us!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        feedbackList.innerHTML = feedbacks.map((feedback, index) => `
+            <div class="feedback-card" style="animation-delay: ${index * 0.1}s">
+                <div class="feedback-meta">
+                    <span><i class="far fa-calendar-alt"></i> ${feedback.date}</span>
+                    <span>${feedback.email ? '<i class="fas fa-envelope"></i> ' + feedback.email : '<i class="fas fa-user-secret"></i> Anonymous'}</span>
+                </div>
+                <div class="feedback-rating">
+                    ${Array.from({length: 5}, (_, i) => 
+                        i < feedback.rating 
+                            ? `<i class="fas fa-star star animate-star" style="animation-delay: ${i * 0.2}s"></i>`
+                            : `<i class="far fa-star star"></i>`
+                    ).join('')}
+                </div>
+                <h3>${feedback.name}</h3>
+                <p>${feedback.feedback}</p>
+                <div class="feedback-actions">
+                    <button class="btn edit-btn" data-id="${feedback.id}"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-danger delete-btn" data-id="${feedback.id}"><i class="fas fa-trash-alt"></i> Delete</button>
+                </div>
+            </div>
+        `).join('');
+        
+        setupEditListeners();
+        setupDeleteListeners();
+        animateStars();
+    }
+    
+    function setupEditListeners() {
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = parseInt(this.getAttribute('data-id'));
+                const feedback = feedbacks.find(f => f.id === id);
+                
+                if (feedback) {
+                    document.getElementById('editId').value = feedback.id;
+                    document.getElementById('editName').value = feedback.name;
+                    document.getElementById('editEmail').value = feedback.email || '';
+                    document.getElementById('editRating').value = feedback.rating;
+                    document.getElementById('editFeedback').value = feedback.feedback;
+                    
+                    // Set star rating
+                    const stars = editRatingInput.querySelectorAll('.rating-star');
+                    stars.forEach(star => {
+                        star.classList.remove('active');
+                        if (parseInt(star.getAttribute('data-value')) <= feedback.rating) {
+                            star.classList.add('active');
+                        }
+                    });
+                    
+                    openModal();
+                }
+            });
+        });
+    }
+    
+    function setupDeleteListeners() {
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = parseInt(this.getAttribute('data-id'));
+                const card = this.closest('.feedback-card');
+                
+                // Add delete animation
+                card.style.transform = 'scale(0.9)';
+                card.style.opacity = '0';
+                card.style.transition = 'all 0.4s ease';
+                
+                setTimeout(() => {
+                    feedbacks = feedbacks.filter(f => f.id !== id);
+                    saveFeedbacks();
+                    renderFeedbacks();
+                    showConfirmation('Feedback deleted successfully!');
+                }, 400);
+            });
+        });
+    }
+    
+    // Animate stars in feedback cards
+    function animateStars() {
+        document.querySelectorAll('.feedback-rating .star').forEach((star, index) => {
+            setTimeout(() => {
+                star.style.transform = 'scale(1.3)';
+                setTimeout(() => {
+                    star.style.transform = 'scale(1)';
+                }, 300);
+            }, index * 100);
+        });
+    }
+    
+    // Save feedbacks to localStorage
+    function saveFeedbacks() {
+        localStorage.setItem('feedbacks', JSON.stringify(feedbacks));
+    }
+});
+    </script>
+</body>
+</html>
