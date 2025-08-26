@@ -1136,4 +1136,30 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
 });
+
+
+
+
+
+if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData);
+
+        
+        const message = `New Contact Submission:\n
+        Name: ${data.name}\n
+        Email: ${data.email}\n
+        Message: ${data.message}`;
+
+        const whatsappNumber = "919308631825";
+
+        window.location.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+        
+        this.reset();
+    });
+}
