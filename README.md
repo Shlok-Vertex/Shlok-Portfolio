@@ -1,4 +1,4 @@
-# 🌟 Shlok Srivastava | Creative Developer Portfolio.   
+# 🌟 Shlok Srivastava | Creative Developer Portfolio.  
 
 Welcome to my personal portfolio website! This project showcases my skills, projects, and services as a **Web Developer** and **UI/UX Designer**. Explore my work, learn about my journey, and feel free to get in touch!
 
